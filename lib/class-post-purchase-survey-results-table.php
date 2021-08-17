@@ -106,6 +106,37 @@ class Post_Purchase_Survey_Results_Admin_List_Table extends WP_List_Table {
 		}
 	}
 
+  function get_db_data($current_blog_id, $productid_filter, $order, $orderby, $paged, $per_page) {
+		global $wpdb, $_wp_column_headers;
+    $temp_cart_table_name = $wpdb->get_blog_prefix($current_blog_id) . POST_PURCHASE_SURVEY_RESULTS_TABLE_NAME;
+    $sql = "SELECT * FROM {$temp_cart_table_name} WHERE 1=1 ";
+
+    $where_sql = "";
+    if (!empty($productid_filter)) {
+      $where_sql .= " AND product_ids LIKE '%$productid_filter%' ";
+    }
+    $sql .= $where_sql;
+
+		if(!empty($orderby) & !empty($order)) {
+			$sql .= " ORDER BY $orderby $order ";
+		}
+
+		if($paged > 0) {
+			$offset = ($paged-1) * $per_page;
+			$sql .= $wpdb->prepare(" LIMIT %d, %d ", $offset, $per_page);
+		} else {
+      $sql .= $wpdb->prepare(" LIMIT 0, %d ", $per_page);
+    }
+
+    $totalitems = $wpdb->get_var("SELECT COUNT(*) FROM $temp_cart_table_name WHERE 1=1 " . $where_sql);
+    $results = $wpdb->get_results($sql);
+
+    return array(
+      'totalitems' => $totalitems,
+      'results' => $results,
+    );
+  }
+
 	/**
 	 * Define the columns that are going to be used in the table
 	 * @return array $columns, the array of columns to use with the table
@@ -182,29 +213,18 @@ class Post_Purchase_Survey_Results_Admin_List_Table extends WP_List_Table {
 			$author_id = get_current_user_id();
 		}
 
-    $temp_cart_table_name = $wpdb->prefix . POST_PURCHASE_SURVEY_RESULTS_TABLE_NAME;
+    $current_blog_id = get_current_blog_id();
+    $db_data = $this->get_db_data( $current_blog_id, $productid_filter, $order, $orderby, $paged, $per_page );
+    $results = $db_data['results'];
+    $totalitems = $db_data['totalitems'];
 
-    $sql = "SELECT * FROM {$temp_cart_table_name} WHERE 1=1 ";
-
-    $where_sql = "";
-    if (!empty($productid_filter)) {
-      $where_sql .= " AND product_ids LIKE '%$productid_filter%' ";
+    if (is_multisite() && $current_blog_id !== 1 && count($results) > 0) {
+      switch_to_blog(1);
+      $db_data = $this->get_db_data( 1, $productid_filter, $order, $orderby, $paged, $per_page );
+      $results = $db_data['results'];
+      $totalitems = $db_data['totalitems'];
+      restore_current_blog();
     }
-    $sql .= $where_sql;
-
-		if(!empty($orderby) & !empty($order)) {
-			$sql .= " ORDER BY $orderby $order ";
-		}
-
-		if($paged > 0) {
-			$offset = ($paged-1) * $per_page;
-			$sql .= $wpdb->prepare(" LIMIT %d, %d ", $offset, $per_page);
-		} else {
-      $sql .= $wpdb->prepare(" LIMIT 0, %d ", $per_page);
-    }
-
-    $totalitems = $wpdb->get_var("SELECT COUNT(*) FROM $temp_cart_table_name WHERE 1=1 " . $where_sql);
-    $results = $wpdb->get_results($sql);
 
 		//How many pages do we have in total?
 		$totalpages = ceil($totalitems/$per_page);
