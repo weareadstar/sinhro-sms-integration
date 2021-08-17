@@ -217,7 +217,7 @@ class Post_Purchase_Entries_Admin_List_Table extends WP_List_Table {
     $results = $db_data['results'];
     $totalitems = $db_data['totalitems'];
 
-    if (is_multisite() && $current_blog_id !== 1 && count($results) > 0) {
+    if (is_multisite() && $current_blog_id !== 1 && empty($results)) {
       switch_to_blog(1);
       $db_data = $this->get_db_data( 1, $order, $orderby, $paged, $per_page );
       $results = $db_data['results'];
