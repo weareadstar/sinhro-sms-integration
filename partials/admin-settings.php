@@ -11,6 +11,24 @@ require_once(__DIR__ . "/../lib/class-post-purchase-survey-results-table.php");
 
 //Get the active tab from the $_GET param
 $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
+
+function get_sinhro_option($option_name) {
+  $current_blog_id = get_current_blog_id();
+  $option_value = esc_attr(get_blog_option($current_blog_id, $option_name));
+  $default_value = esc_attr(get_option($option_name));
+  $default_multisite_value = esc_attr(get_blog_option(1, $option_name));
+
+  if (!is_multisite()) {
+    return $default_value;
+  }
+
+  if (empty($option_value) && $current_blog_id !== 1) {
+    update_option($option_name, $default_multisite_value);
+    return $default_multisite_value;
+  }
+
+  return $option_value;
+}
 ?>
 <div class="wrap">
     <h1><?php esc_html_e("Sinhro Integration settings", "sinhro-sms-integration"); ?></h1>
@@ -44,7 +62,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after cart is abandoned that we send the first email", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_email_1_minutes" value="<?php echo esc_attr(get_option("ssi_email_1_minutes")); ?>" />
+                  <input type="number" name="ssi_email_1_minutes" value="<?php echo get_sinhro_option('ssi_email_1_minutes'); ?>" />
                   <small><?php esc_html_e("Default: 15", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -54,7 +72,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after cart is abandoned that we send the first sms", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_sms_1_minutes" value="<?php echo esc_attr(get_option("ssi_sms_1_minutes")); ?>" />
+                  <input type="number" name="ssi_sms_1_minutes" value="<?php echo get_sinhro_option("ssi_sms_1_minutes"); ?>" />
                   <small><?php esc_html_e("Default: 1440 - ie 24 hours (60x24)", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -64,7 +82,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after cart is abandoned that we send the second email", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_email_2_minutes" value="<?php echo esc_attr(get_option("ssi_email_2_minutes")); ?>" />
+                  <input type="number" name="ssi_email_2_minutes" value="<?php echo get_sinhro_option("ssi_email_2_minutes"); ?>" />
                   <small><?php esc_html_e("Default: 1920 - ie 32 hours (60x32)", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -74,7 +92,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after cart is abandoned that we send the second sms", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_sms_2_minutes" value="<?php echo esc_attr(get_option("ssi_sms_2_minutes")); ?>" />
+                  <input type="number" name="ssi_sms_2_minutes" value="<?php echo get_sinhro_option("ssi_sms_2_minutes"); ?>" />
                   <small><?php esc_html_e("Default: 2880 - ie 48 hours (60x48)", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -84,7 +102,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after cart is abandoned that we send the third email", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_email_3_minutes" value="<?php echo esc_attr(get_option("ssi_email_3_minutes")); ?>" />
+                  <input type="number" name="ssi_email_3_minutes" value="<?php echo get_sinhro_option("ssi_email_3_minutes"); ?>" />
                   <small><?php esc_html_e("Default: 3840 - ie 64 hours (60x64)", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -94,7 +112,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after order is marked Completed that that we send the first post purchase email", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_post_purchase_email_1_minutes" value="<?php echo esc_attr(get_option("ssi_post_purchase_email_1_minutes")); ?>" />
+                  <input type="number" name="ssi_post_purchase_email_1_minutes" value="<?php echo get_sinhro_option("ssi_post_purchase_email_1_minutes"); ?>" />
                   <small><?php esc_html_e("Default: 15", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -104,7 +122,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Time in minutes after order is marked Completed that we send the first post purchase sms", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="number" name="ssi_post_purchase_sms_1_minutes" value="<?php echo esc_attr(get_option("ssi_post_purchase_sms_1_minutes")); ?>" />
+                  <input type="number" name="ssi_post_purchase_sms_1_minutes" value="<?php echo get_sinhro_option("ssi_post_purchase_sms_1_minutes"); ?>" />
                   <small><?php esc_html_e("Default: 1440 - ie 24 hours (60x24)", "sinhro-sms-integration"); ?></small>
               </td>
             </tr>
@@ -128,7 +146,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Override default host", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="text" name="ssi_api_host" value="<?php echo esc_attr(get_option("ssi_api_host")); ?>" />
+                  <input type="text" name="ssi_api_host" value="<?php echo get_sinhro_option("ssi_api_host"); ?>" />
                   <small><?php esc_html_e("Default: http://gw.sinhro.si/api/http", "sinhro-sms-integration"); ?></small>
               </td>
           </tr>
@@ -138,7 +156,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <?php esc_html_e("Api username", "sinhro-sms-integration"); ?><br />
               </th>
               <td>
-                  <input type="text" name="ssi_api_username" value="<?php echo esc_attr(get_option("ssi_api_username")); ?>" />
+                  <input type="text" name="ssi_api_username" value="<?php echo get_sinhro_option("ssi_api_username"); ?>" />
                   <small><?php esc_html_e("Your gw.sinhro.si API username", "sinhro-sms-integration"); ?></small>
               </td>
           </tr>
@@ -147,7 +165,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <?php esc_html_e("Api password", "sinhro-sms-integration"); ?><br />
               </th>
               <td>
-                  <input type="password" name="ssi_api_password" value="<?php echo esc_attr(get_option("ssi_api_password")); ?>" />
+                  <input type="password" name="ssi_api_password" value="<?php echo get_sinhro_option("ssi_api_password"); ?>" />
                   <small><?php esc_html_e("Your gw.sinhro.si API password", "sinhro-sms-integration"); ?></small>
               </td>
           </tr>
@@ -157,7 +175,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <small><?php esc_html_e("Override default discount value", "sinhro-sms-integration"); ?></small>
               </th>
               <td>
-                  <input type="text" name="ssi_api_discount_value" value="<?php echo esc_attr(get_option("ssi_api_discount_value")); ?>" />
+                  <input type="text" name="ssi_api_discount_value" value="<?php echo get_sinhro_option("ssi_api_discount_value"); ?>" />
                   <small><?php esc_html_e("Default: 20", "sinhro-sms-integration"); ?></small>
               </td>
           </tr>
@@ -187,7 +205,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <?php esc_html_e("Post purchase first sms survey page url", "sinhro-sms-integration"); ?><br />
               </th>
               <td>
-                  <input type="text" name="ssi_post_purchase_sms_1_survey_page_url" value="<?php echo esc_attr(get_option("ssi_post_purchase_sms_1_survey_page_url")); ?>" />
+                  <input type="text" name="ssi_post_purchase_sms_1_survey_page_url" value="<?php echo get_sinhro_option("ssi_post_purchase_sms_1_survey_page_url"); ?>" />
               </td>
           </tr>
         </table>
@@ -209,7 +227,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Header color", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_mandrill_options_header_color" value="<?php echo esc_attr(get_option("ssi_mandrill_options_header_color")); ?>">
+                    <input type="text" name="ssi_mandrill_options_header_color" value="<?php echo get_sinhro_option("ssi_mandrill_options_header_color"); ?>">
                     <small><?php esc_html_e("The hex code for header (e.g. #ffffff)", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -219,7 +237,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Footer color", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_color" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_color")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_color" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_color"); ?>">
                     <small><?php esc_html_e("The hex code for footer (e.g. #ffffff)", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -229,7 +247,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Header logo URL", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_mandrill_options_header_logo" value="<?php echo esc_attr(get_option("ssi_mandrill_options_header_logo")); ?>">
+                    <input type="text" name="ssi_mandrill_options_header_logo" value="<?php echo get_sinhro_option("ssi_mandrill_options_header_logo"); ?>">
                     <small><?php esc_html_e("The URL for header logo", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -239,7 +257,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Footer image URL", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_logo" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_logo")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_logo" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_logo"); ?>">
                     <small><?php esc_html_e("The URL for footer image", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -249,7 +267,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Footer headline", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_headline" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_headline")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_headline" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_headline"); ?>">
                     <small><?php esc_html_e("The headline for footer", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -260,7 +278,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_facebook_url" value="<?php echo esc_attr(get_option("ssi_mandrill_options_facebook_url")); ?>">
+                    <input type="text" name="ssi_mandrill_options_facebook_url" value="<?php echo get_sinhro_option("ssi_mandrill_options_facebook_url"); ?>">
                     <small><?php esc_html_e("The URL for facebook link", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -271,7 +289,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_facebook_img" value="<?php echo esc_attr(get_option("ssi_mandrill_options_facebook_img")); ?>">
+                    <input type="text" name="ssi_mandrill_options_facebook_img" value="<?php echo get_sinhro_option("ssi_mandrill_options_facebook_img"); ?>">
                     <small><?php esc_html_e("The URL for facebook image", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -282,7 +300,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_instagram_url" value="<?php echo esc_attr(get_option("ssi_mandrill_options_instagram_url")); ?>">
+                    <input type="text" name="ssi_mandrill_options_instagram_url" value="<?php echo get_sinhro_option("ssi_mandrill_options_instagram_url"); ?>">
                     <small><?php esc_html_e("The URL for instagram link", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -293,7 +311,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_instagram_img" value="<?php echo esc_attr(get_option("ssi_mandrill_options_instagram_img")); ?>">
+                    <input type="text" name="ssi_mandrill_options_instagram_img" value="<?php echo get_sinhro_option("ssi_mandrill_options_instagram_img"); ?>">
                     <small><?php esc_html_e("The URL for instagram image", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -304,7 +322,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_twitter_url" value="<?php echo esc_attr(get_option("ssi_mandrill_options_twitter_url")); ?>">
+                    <input type="text" name="ssi_mandrill_options_twitter_url" value="<?php echo get_sinhro_option("ssi_mandrill_options_twitter_url"); ?>">
                     <small><?php esc_html_e("The URL for twitter link", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -315,7 +333,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_twitter_img" value="<?php echo esc_attr(get_option("ssi_mandrill_options_twitter_img")); ?>">
+                    <input type="text" name="ssi_mandrill_options_twitter_img" value="<?php echo get_sinhro_option("ssi_mandrill_options_twitter_img"); ?>">
                     <small><?php esc_html_e("The URL for twitter image", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -326,7 +344,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_info_mail" value="<?php echo esc_attr(get_option("ssi_mandrill_options_info_mail")); ?>">
+                    <input type="text" name="ssi_mandrill_options_info_mail" value="<?php echo get_sinhro_option("ssi_mandrill_options_info_mail"); ?>">
                 </td>
             </tr>
 
@@ -336,7 +354,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_first_link_url" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_first_link_url")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_first_link_url" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_first_link_url"); ?>">
                 </td>
             </tr>
 
@@ -346,7 +364,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_first_link_text" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_first_link_text")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_first_link_text" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_first_link_text"); ?>">
                 </td>
             </tr>
 
@@ -356,7 +374,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_second_link_url" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_second_link_url")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_second_link_url" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_second_link_url"); ?>">
                 </td>
             </tr>
 
@@ -366,7 +384,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 </th>
 
                 <td>
-                    <input type="text" name="ssi_mandrill_options_footer_second_link_text" value="<?php echo esc_attr(get_option("ssi_mandrill_options_footer_second_link_text")); ?>">
+                    <input type="text" name="ssi_mandrill_options_footer_second_link_text" value="<?php echo get_sinhro_option("ssi_mandrill_options_footer_second_link_text"); ?>">
                 </td>
             </tr>
         </table>
@@ -388,7 +406,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <?php esc_html_e("Mandrill api key", "sinhro-sms-integration"); ?><br />
               </th>
               <td>
-                  <input type="text" name="ssi_mandrill_api_key" value="<?php echo esc_attr(get_option("ssi_mandrill_api_key")); ?>" />
+                  <input type="text" name="ssi_mandrill_api_key" value="<?php echo get_sinhro_option("ssi_mandrill_api_key"); ?>" />
                   <small><?php esc_html_e("Your Mandrill API key", "sinhro-sms-integration"); ?></small>
               </td>
           </tr>
@@ -397,7 +415,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                   <?php esc_html_e("Mandrill from address", "sinhro-sms-integration"); ?><br />
               </th>
               <td>
-                  <input type="text" name="ssi_mandrill_from_address" value="<?php echo esc_attr(get_option("ssi_mandrill_from_address")); ?>" />
+                  <input type="text" name="ssi_mandrill_from_address" value="<?php echo get_sinhro_option("ssi_mandrill_from_address"); ?>" />
                   <small><?php esc_html_e("Your Mandrill from email address", "sinhro-sms-integration"); ?></small>
               </td>
           </tr>
@@ -534,7 +552,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 <?php esc_html_e("Post purchase quality question", "sinhro-sms-integration"); ?><br />
             </th>
             <td>
-              <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_1"><?php echo esc_attr(get_option("ssi_post_purchase_survey_question_1")); ?></textarea>
+              <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_1"><?php echo get_sinhro_option("ssi_post_purchase_survey_question_1"); ?></textarea>
             </td>
         </tr>
         <tr valign="top">
@@ -542,7 +560,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 <?php esc_html_e("Post purchase delivery question", "sinhro-sms-integration"); ?><br />
             </th>
             <td>
-              <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_2"><?php echo esc_attr(get_option("ssi_post_purchase_survey_question_2")); ?></textarea>
+              <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_2"><?php echo get_sinhro_option("ssi_post_purchase_survey_question_2"); ?></textarea>
             </td>
         </tr>
         <tr valign="top">
@@ -550,7 +568,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 <?php esc_html_e("Post purchase shipping question", "sinhro-sms-integration"); ?><br />
             </th>
             <td>
-              <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_3"><?php echo esc_attr(get_option("ssi_post_purchase_survey_question_3")); ?></textarea>
+              <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_3"><?php echo get_sinhro_option("ssi_post_purchase_survey_question_3"); ?></textarea>
             </td>
         </tr>
         <tr valign="top">
@@ -558,7 +576,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 <?php esc_html_e("Post purchase customer support question", "sinhro-sms-integration"); ?><br />
             </th>
             <td>
-                <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_4"><?php echo esc_attr(get_option("ssi_post_purchase_survey_question_4")); ?></textarea>
+                <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_4"><?php echo get_sinhro_option("ssi_post_purchase_survey_question_4"); ?></textarea>
             </td>
         </tr>
         <tr valign="top">
@@ -566,7 +584,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                 <?php esc_html_e("Post purchase recommendation question", "sinhro-sms-integration"); ?><br />
             </th>
             <td>
-                <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_5"><?php echo esc_attr(get_option("ssi_post_purchase_survey_question_5")); ?></textarea>
+                <textarea rows="5" cols="50" name="ssi_post_purchase_survey_question_5"><?php echo get_sinhro_option("ssi_post_purchase_survey_question_5"); ?></textarea>
             </td>
         </tr>
       </table>
@@ -586,7 +604,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Phone number", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_api_test_phone_number" />
+                    <input type="text" name="ssi_api_test_phone_number" value="<?php echo get_sinhro_option("ssi_api_test_phone_number"); ?>" />
                     <small><?php esc_html_e("The phone number to send test SMS to with leading 0s, e.g. 003861234567", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -595,7 +613,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("SMS message", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_api_test_message" />
+                    <input type="text" name="ssi_api_test_message" value="<?php echo get_sinhro_option("ssi_api_test_message"); ?>" />
                     <small><?php esc_html_e("Default: 12345", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -618,7 +636,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("To email address", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_test_to_email" />
+                    <input type="text" name="ssi_test_to_email" value="<?php echo get_sinhro_option("ssi_test_to_email"); ?>" />
                     <small><?php esc_html_e("The email address to send the test message to", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -627,7 +645,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Email subject", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <input type="text" name="ssi_test_email_subject" />
+                    <input type="text" name="ssi_test_email_subject" value="<?php echo get_sinhro_option("ssi_test_email_subject"); ?>" />
                     <small><?php esc_html_e("The email test subject to send", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>
@@ -637,7 +655,9 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : "times";
                     <?php esc_html_e("Email content", "sinhro-sms-integration"); ?><br />
                 </th>
                 <td>
-                    <textarea rows="5" cols="50" name="mail_content"></textarea>
+                    <textarea rows="5" cols="50" name="ssi_test_email_content">
+                      <?php echo get_sinhro_option("ssi_test_email_content"); ?>
+                    </textarea>
                     <small><?php esc_html_e("The main email content to send", "sinhro-sms-integration"); ?></small>
                 </td>
             </tr>

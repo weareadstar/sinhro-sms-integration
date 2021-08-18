@@ -1004,7 +1004,7 @@ class SinhroIntegration
               $options_footer_second_link_url = get_option("ssi_mandrill_options_footer_second_link_url");
               $options_footer_second_link_text = get_option("ssi_mandrill_options_footer_second_link_text");
 
-              $options_content = $_POST["mail_content"];
+              $options_content = $_POST["ssi_test_email_content"];
 
               $options = [
                 'header_color' => $options_header_color,
@@ -1123,6 +1123,13 @@ class SinhroIntegration
         register_setting("sinhro-times-integration-settings", "ssi_post_purchase_sms_1_minutes");
         register_setting("sinhro-times-integration-settings", "ssi_sms_1_minutes");
         register_setting("sinhro-times-integration-settings", "ssi_sms_2_minutes");
+
+        register_setting("sinhro-times-integration-settings", "ssi_api_test_phone_number");
+        register_setting("sinhro-times-integration-settings", "ssi_api_test_message");
+
+        register_setting("sinhro-times-integration-settings", "ssi_test_to_email");
+        register_setting("sinhro-times-integration-settings", "ssi_test_email_subject");
+        register_setting("sinhro-times-integration-settings", "ssi_test_email_content");
 
         register_setting("sinhro-sms-integration-settings", "ssi_post_purchase_sms_1_survey_page_url");
         register_setting("sinhro-sms-integration-settings", "ssi_api_cart_url_1");
